@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
-import { Model } from "mongoose"
-import { SignupDto } from "src/auth/dto/signup.dto"
+import  { Model, Types } from "mongoose"
 import { Category, CategoryDocument } from "src/schemas/category.schema"
 import { CreateCategoryDto, GetCategoryDto, UpdateCategoryDto } from "./categorydto/category.dto"
+import { CarsService } from "src/cars/cars.services"
 
 @Injectable()
 export class CategoriesService {
-	constructor(@InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>) {}
+	constructor(@InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>, 
+		private readonly carService: CarsService ) {}
 
 	findById(id: string) {
 		return this.categoryModel.findById(id).lean().exec()
@@ -26,9 +27,11 @@ export class CategoriesService {
 		return createdCategory.toObject()
 	}
 
-	async delete(id: GetCategoryDto) {
-		const deletedCategory = await this.categoryModel.findOneAndDelete({ _id: id })
-		return deletedCategory
+	async delete(id: string) {
+		const deletedCategory = await this.categoryModel.findOneAndDelete({ _id: new Types.ObjectId(id) })
+		const deletedCarsIds =  await this.carService.deleteCarsFromCategories(deletedCategory?._id)
+
+		return {...deletedCategory?.toObject(), deletedCarsIds} 
 	}
 
 	async update(id: string, category: UpdateCategoryDto) {

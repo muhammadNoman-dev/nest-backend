@@ -12,25 +12,25 @@ export class CarsController {
 	constructor(private readonly carsService: CarsService) {}
 
 	
-	@Get("cars")
+	@Get("")
 	async getAll(){
 	  const cars = await this.carsService.getAll()
 	  return cars
 	}
 
-	@Post("car")
+	@Post("")
 	async create(@Body() body:CreateCarDto ){
 	  const car = await this.carsService.create(body)
 	  return car
 	}
 
-	@Delete("car/:id")
+	@Delete("/:id")
 	async delete(@Param() params:GetCarDto ){
-	  const car = await this.carsService.delete(params)
+	  const car = await this.carsService.delete(params.id)
 	  return car
 	}
 
-	@Put("car/:id")
+	@Put("/:id")
 	async updateCarById(
 		@Param() params: GetCarDto,
 		@Body() body: UpdateCarDto	) {

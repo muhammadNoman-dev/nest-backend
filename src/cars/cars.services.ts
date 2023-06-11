@@ -1,8 +1,9 @@
 import { Injectable,NotFoundException } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
-import { Model } from "mongoose"
 import { Car, CarDocument } from "src/schemas/car.schema"
 import { CreateCarDto, GetCarDto, UpdateCarDto } from "./cardto/car.dto"
+import { Category } from "src/schemas/category.schema"
+import  { Model, Types } from "mongoose"
 
 @Injectable()
 export class CarsService {
@@ -13,7 +14,7 @@ export class CarsService {
 	}
 
 	getAll() {
-		return this.carModel.find().exec()
+		return this.carModel.find().populate({ path:"category", model: Category.name, select:{ name:1 }, transform : doc=> doc.name }).exec()
 	}
 
 	findOne(filters: Partial<Car>) {
@@ -25,16 +26,29 @@ export class CarsService {
 		return createdCar.toObject()
 	}
 
-	async delete(id: GetCarDto) {
-		const deletedCar = await this.carModel.findOneAndDelete({ _id: id })
-		return deletedCar
+	async delete(id: string| string[]) {
+		if (Array.isArray(id)){
+			const deletedCars = await this.carModel.deleteMany(id)
+		}else {
+			const deletedCar = await this.carModel.findOneAndDelete({ _id: new Types.ObjectId(id) })
+			return deletedCar
+		}
+	}
+
+	async deleteCarsFromCategories(categoryId : string) {
+		const categoryCars =  await this.carModel.find({category : categoryId})
+
+		const ids : string[] = categoryCars.map(cars => cars._id)
+		const deletedCars = await this.carModel.deleteMany({id : { $in: ids }})
+		
+		if (!!deletedCars.deletedCount) return ids
 	}
 
 	async update(id: string, car: UpdateCarDto) {
 		const carFound = await this.findById(id)
 
 		if (!carFound) throw new NotFoundException("Not Found")
-		const updatedCar = await this.carModel.findByIdAndUpdate(id, { $set: car }, { new: true })
+		const updatedCar = await this.carModel.findByIdAndUpdate(new Types.ObjectId(id), { $set: car }, { new: true })
 
 		const carObject = updatedCar?.toObject()
 		return carObject

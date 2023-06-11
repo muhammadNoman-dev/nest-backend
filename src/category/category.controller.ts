@@ -3,8 +3,8 @@ import { CategoriesService } from "./category.services";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CreateCategoryDto, GetCategoryDto, UpdateCategoryDto } from "./categorydto/category.dto";
+import mongoose from "mongoose";
 
-@Controller("categories")
 @ApiTags("Categories")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -12,29 +12,29 @@ import { CreateCategoryDto, GetCategoryDto, UpdateCategoryDto } from "./category
 export class CategoriesController {
 	constructor(private readonly categories: CategoriesService) {}
 
-	@Get("categories")
+	@Get("")
 	async getAll(){
 	  const categories = await this.categories.getAll()
 	  return categories
 	}
 
-	@Post("categories")
+	@Post("")
 	async create(@Body() body:CreateCategoryDto ){
 	  const category = await this.categories.create(body)
 	  return category
 	}
 
-	@Delete("category/:categoryId")
+	@Delete("/:_id")
 	async delete(@Param() params:GetCategoryDto ){
-	  const category = await this.categories.delete(params)
+	  const category = await this.categories.delete( params._id)
 	  return category
 	}
 
-	@Put("category/:categoryId")
+	@Put("/:_id")
 	async updateCategoryById(
 		@Param() params: GetCategoryDto,
 		@Body() body: UpdateCategoryDto	) {
-		const category = await this.categories.update(params.id, body)
+		const category = await this.categories.update(params._id, body)
 		return category
 	}
 

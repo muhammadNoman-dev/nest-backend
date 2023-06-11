@@ -28,7 +28,6 @@ export class ConfigService {
   }
 
   get mongodbURI(): string {
-    console.log(this.config.MONGODB_URI)
     return this.config.MONGODB_URI;
   }
 

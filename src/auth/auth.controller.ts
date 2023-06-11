@@ -21,13 +21,6 @@ import { LocalAuthGuard } from './local-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
-  @Get("whatver")
-  async whatever(){
-    console.log("finally working....")
-    return "whatverr"
-  }
-
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: any, @Body() _body: LoginDto) {
@@ -45,7 +38,6 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('signup')
   async signup(@Body() body: SignupDto) {
-    console.log("body", body)
     const user = await this.authService.signup(body);
     return new UserResponseDto(user);
   }
