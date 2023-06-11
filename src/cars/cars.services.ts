@@ -2,7 +2,7 @@ import { Injectable,NotFoundException } from "@nestjs/common"
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from "mongoose"
 import { Car, CarDocument } from "src/schemas/car.schema"
-import { CreateCarDto, UpdateCarDto } from "./cardto/car.dto"
+import { CreateCarDto, GetCarDto, UpdateCarDto } from "./cardto/car.dto"
 
 @Injectable()
 export class CarsService {
@@ -12,16 +12,20 @@ export class CarsService {
 		return this.carModel.findById(id).lean().exec()
 	}
 
+	getAll() {
+		return this.carModel.find().exec()
+	}
+
 	findOne(filters: Partial<Car>) {
 		return this.carModel.findOne(filters).lean().exec()
 	}
 
 	async create(car: CreateCarDto) {
-		const createdUser = await new this.carModel(car).save()
-		return createdUser.toObject()
+		const createdCar = await new this.carModel(car).save()
+		return createdCar.toObject()
 	}
 
-	async delete(id: string) {
+	async delete(id: GetCarDto) {
 		const deletedCar = await this.carModel.findOneAndDelete({ _id: id })
 		return deletedCar
 	}

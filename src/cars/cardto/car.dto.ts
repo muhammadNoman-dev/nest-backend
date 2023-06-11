@@ -5,7 +5,7 @@ import { IsString, IsNotEmpty, IsMongoId } from "class-validator"
 export class GetCarDto {
 	@ApiProperty({ default: "", description: "Car ID" })
 	@IsMongoId()
-	carId: string
+	id: string
 }
 
 export class CreateCarDto {

@@ -5,7 +5,7 @@ import { IsString, IsNotEmpty, IsMongoId } from "class-validator"
 export class GetCategoryDto {
 	@ApiProperty({ default: "", description: "Category ID" })
 	@IsMongoId()
-	categoryId: string
+	id: string
 }
 
 export class CreateCategoryDto {

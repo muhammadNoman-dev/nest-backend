@@ -1,39 +1,43 @@
-// import { Injectable, NotFoundException } from "@nestjs/common"
-// import { InjectModel } from "@nestjs/mongoose"
-// import { Model } from "mongoose"
-// import { SignupDto } from "src/auth/dto/signup.dto"
-// import { Category, CategoryDocument } from "src/schemas/category.schema"
-// import { UpdateCategoryDto } from "./categorydto/category.dto"
+import { Injectable, NotFoundException } from "@nestjs/common"
+import { InjectModel } from "@nestjs/mongoose"
+import { Model } from "mongoose"
+import { SignupDto } from "src/auth/dto/signup.dto"
+import { Category, CategoryDocument } from "src/schemas/category.schema"
+import { CreateCategoryDto, GetCategoryDto, UpdateCategoryDto } from "./categorydto/category.dto"
 
-// @Injectable()
-// export class CategoriesService {
-// 	constructor(@InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>) {}
+@Injectable()
+export class CategoriesService {
+	constructor(@InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>) {}
 
-// 	findById(id: string) {
-// 		return this.categoryModel.findById(id).lean().exec()
-// 	}
+	findById(id: string) {
+		return this.categoryModel.findById(id).lean().exec()
+	}
 
-// 	findOne(filters: Partial<Category>) {
-// 		return this.categoryModel.findOne(filters).lean().exec()
-// 	}
+    getAll() {
+		return this.categoryModel.find().exec()
+	}
 
-// 	async create(category: SignupDto) {
-// 		const createdUser = await new this.categoryModel(category).save()
-// 		return createdUser.toObject()
-// 	}
+	findOne(filters: Partial<Category>) {
+		return this.categoryModel.findOne(filters).lean().exec()
+	}
 
-// 	async delete(id: string) {
-// 		const deletedCategory = await this.categoryModel.findOneAndDelete({ _id: id })
-// 		return deletedCategory
-// 	}
+	async create(category: CreateCategoryDto) {
+		const createdCategory = await new this.categoryModel(category).save()
+		return createdCategory.toObject()
+	}
 
-// 	async update(id: string, category: UpdateCategoryDto) {
-// 		const categoryFound = await this.findById(id)
+	async delete(id: GetCategoryDto) {
+		const deletedCategory = await this.categoryModel.findOneAndDelete({ _id: id })
+		return deletedCategory
+	}
 
-// 		if (!categoryFound) throw new NotFoundException("Not Found")
-// 		const updatedcategory = await this.categoryModel.findByIdAndUpdate(id, { $set: category }, { new: true })
+	async update(id: string, category: UpdateCategoryDto) {
+		const categoryFound = await this.findById(id)
 
-// 		const categoryObject = updatedcategory?.toObject()
-// 		return categoryObject
-// 	}
-// }
+		if (!categoryFound) throw new NotFoundException("Not Found")
+		const updatedcategory = await this.categoryModel.findByIdAndUpdate(id, { $set: category }, { new: true })
+
+		const categoryObject = updatedcategory?.toObject()
+		return categoryObject
+	}
+}
