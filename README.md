@@ -45,6 +45,14 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Running Swagger
+
+To open the swagger UI navigate to:
+
+```bash
+localhost:8080/docs/
+```
+
 ## Test
 
 ```bash
