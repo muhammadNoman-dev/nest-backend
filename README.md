@@ -50,7 +50,7 @@ $ npm run start:prod
 To open the swagger UI navigate to:
 
 ```bash
-localhost:8080/docs/
+localhost:8081/docs/
 ```
 
 ## Test
