@@ -6,7 +6,6 @@ import { UserDocument } from 'src/schemas/user.schema';
 import { JwtService } from '@nestjs/jwt';
 const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey("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")
 // import { EmailService } from "../emailer/emailer"
 
 @Injectable()
